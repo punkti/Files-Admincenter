@@ -1,0 +1,100 @@
+<form action="admincenter.php?site=files" method="post" name="post" enctype="multipart/form-data" onsubmit="return chkFormular()">
+	<input type="hidden" name="captcha_hash" value="$hash" />
+	<input type="hidden" name="id" value="$id" />
+	<input type="hidden" name="poster" value="$userID" />
+	<input type="hidden" name="file[addon_key]" value="$addonKey" />
+    <table width="100%" cellspacing="1" cellpadding="3" border="0">
+		<col width="15%" />
+		<col />
+		<tr>
+            <td><label for="file-category"><b>%category_cl%</b></label></td>
+            <td><select id="file-category" name="file[filecatID]">$filecatsOptions</select></td>
+        </tr>
+		<tr>
+            <td><label for="file-name"><b>%filename%</b></label></td>
+            <td><input type="text" id="file-name" name="file[filename]" value="$name" size="60" maxlength="255" /></td>
+        </tr>
+		<tr>
+			<td colspan="2"><label for="file-info"><b>%info_description%</b></label><br />
+            <table width="99%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td valign="top">$addbbcode</td>
+                    <td valign="top">$addflags</td>
+				</tr>
+			</table>
+            <br />
+			<textarea id="file-info" rows="5" cols="" name="file[info]" style="width: 100%;">$info</textarea>
+			</td>
+		</tr>
+		<tr>
+            <td><label for="file-accesslevel"><b>%accesslevel%</b></label></td>
+            <td><select id="file-accesslevel" name="file[accesslevel]">$accessOptions</select></td>
+        </tr>
+		<tr>
+			<td valign="top"><label for="file-upload"><b>%file-upload%</b></label></td>
+			<td><input type="file" id="file-upload" name="upfile" /></td>
+		</tr>
+		<tr>
+			<td valign="top"><b>%current_file%</b></td>
+			<td><a href="$currentFileUrl" target="_blank" >$currentFileUrl</a></td>
+		</tr>
+		<tr>
+			<td valign="top"><label for="file-url"><b>%extern-link%</b></label></td>
+			<td><input type="text" id="file-url" name="file[url]" size="40" value="$extern" /></td>
+		</tr>
+		<tr>
+			<td><b>%file-size_e%</b></td>
+			<td><input name="file[size]" type="text" value="$size" />
+			<select name="file[sizeunit]">$unit</select>
+			</td>
+      </tr>
+		<tr>
+			<td colspan="2"><hr /></td>
+		</tr>
+		<tr>
+			<td colspan="2"><b>%file-mirrors%</b></td>
+		</tr>
+		<tr>
+            <td><label for="file-mirror-1"><b>%mirror% #2</b></label></td>
+            <td><input type="text" id="file-mirror-1" name="file[mirrors][]" value="$mirrors[0]" size="40" /></td>
+        </tr>
+		<tr>
+            <td><label for="file-mirror-2"><b>%mirror% #3</b></label></td>
+            <td><input type="text" id="file-mirror-2" name="file[mirrors][]" value="$mirrors[1]" size="40" /></td>
+        </tr>
+	</table>
+	<table width="100%" cellspacing="1" cellpadding="3" border="0">
+		<tr>
+            <td>&nbsp;</td>
+            <td><input type="submit" name="$type" value="$type_value" /></td>
+        </tr>
+    </table>
+</form>
+<script type="text/javascript">
+// <![CDATA[
+function chkFormular() {
+	var addMode = !'$id';
+	if(document.getElementById('file-name').value == "") {
+		alert("%you_have_to_enter_filename%");
+		document.getElementById('file-name').focus();
+   		return false;
+	}
+	if(addMode && (document.getElementById('file-upload').value == '') && (document.getElementById('file-url').value == 'http://')){
+	 	alert("%you_have_to_enter_file%");
+		document.getElementById('file-upload').focus();
+		return false;
+	}
+	if(addMode && (document.getElementById('file-url').value != "http://") && (url(document.getElementById('file-url').value) == false)) {
+			alert("%you_have_to_enter_file%");
+			document.getElementById('file-url').focus();
+			return false;
+	}
+	
+	if(!validbbcode(document.getElementById('file-info').value)) {
+		document.getElementById('file-info').focus();
+		return false;
+	}
+}
+var which = MM_findObj('file-info');
+// ]]>
+</script>
