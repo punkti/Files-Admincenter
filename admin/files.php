@@ -61,11 +61,11 @@ if($action == 'add') {
 
 	$extern = 'http://';
 	$mirrors = array('', '');
-	
+
 	$filecatsOptions = generate_options();
 	$accessOptions = '<option value="0">'.$_language->module['all'].'</option><option value="1">'.$_language->module['registered'].'</option><option value="2">'.$_language->module['clanmember'].'</option>';
 	$unit = '<option value="b">Byte</option><option value="kb">KByte</option><option value="mb">MByte</option><option value="gb">GByte</option>';
-	
+
 	$CAPCLASS = new Captcha;
 	$CAPCLASS->create_transaction();
 	$hash = $CAPCLASS->get_hash();
@@ -93,29 +93,28 @@ elseif($action=="edit") {
 			$id = $ds['fileID'];
 			$name = getinput($ds['filename']);
 			$info = getinput($ds['info']);
-			$addonKey = '';
-			
+
 			$filecats = generate_options();
 			$filecatsOptions = str_replace('value="'.$ds['filecatID'].'"', 'value="'.$ds['filecatID'].'" selected="selected"', $filecats);
 			$accessmenu = '<option value="0">'.$_language->module['all'].'</option><option value="1">'.$_language->module['registered'].'</option><option value="2">'.$_language->module['clanmember'].'</option>';
 			$accessOptions = str_replace('value="'.$ds['accesslevel'].'"', 'value="'.$ds['accesslevel'].'" selected="selected"', $accessmenu);
-						
+
 			$extern = 'http://';
 			if(stristr($ds['file'],"http://") || stristr($ds['file'],"ftp://")) $extern = $ds['file'];
-			
+
 			if(validate_url($ds['file'])) {
 				$currentFileUrl = $ds['file'];
 			} elseif(!empty($ds['file'])) {
 				$currentFileUrl = 'http://'.$hp_url.'/downloads/'.$ds['file'];
 			}
-			
+
 			$mirrors = array('', '');
 			if(!empty($ds['mirrors'])) {
 				foreach(explode('||', $ds['mirrors']) as $index => $mirror) {
 					$mirrors[$index] = $mirror;
 				}
 			}
-					
+
 			$sizeinfo = strtolower(detectfilesize($ds['filesize']));
 			$sizeinfo = explode(" ",$sizeinfo);
 
@@ -127,11 +126,11 @@ elseif($action=="edit") {
 				case 'mb': $unit = str_replace('value="mb"','value="mb" selected="selected"', $unit); break;
 				case 'gb': $unit = str_replace('value="gb"','value="gb" selected="selected"', $unit); break;
 			}
-			
+
 			$CAPCLASS = new Captcha;
 			$CAPCLASS->create_transaction();
 			$hash = $CAPCLASS->get_hash();
-			
+
 			$addbbcode = '';
 			$addflags = '';
 			if($enableBbCode) {
@@ -139,7 +138,7 @@ elseif($action=="edit") {
 				eval ("\$addbbcode = \"".gettemplate("addbbcode", "html", "admin")."\";");
 				eval ("\$addflags = \"".gettemplate("flags_admin", "html", "admin")."\";");
 			}
-			
+
 			$type = 'saveedit';
 			$type_value = $_language->module['edit'];
 			eval ("\$html = \"".gettemplate("admincenter_file_edit", "html", "admin")."\";");
@@ -168,10 +167,6 @@ elseif(isset($_POST['save'])) {
 		$info			= $file['info'];
 		$accesslevel	= $file['accesslevel'];
 		$mirrors		= $file['mirrors'];
-		$addonKey		= $file['addon_key'];
-		if(empty($addonKey)) {
-			$addonKey = createkey(9);
-		}
 		if($mirrors) {
 			$saveMirrors = array();
 			foreach($mirrors as $mirror) {
@@ -214,7 +209,7 @@ elseif(isset($_POST['save'])) {
 			elseif(validate_url($fileurl)) {
 				$fileSource = $fileurl;
 			}
-			
+
 			if(isset($errorBefore)) {
 				echo $errorBefore;
 			} else {
@@ -239,9 +234,6 @@ elseif(isset($_POST['save'])) {
 }
 
 elseif(isset($_POST['saveedit'])) {
-//	$icon=$_FILES["icon"];
-//	$country=$_POST["country"];
-//	$short=$_POST["shorthandle"];
 	echo '<h1>&curren; <a href="admincenter.php?site=files" class="white">'.$_language->module['files'].'</a> &raquo; '.$_language->module['edit_file'].'</h1>';
 	$CAPCLASS = new Captcha;
 	if($CAPCLASS->check_captcha(0, $_POST['captcha_hash'])) {
@@ -257,7 +249,7 @@ elseif(isset($_POST['saveedit'])) {
 		$mirrors		= $file['mirrors'];
 		$isAddon		= isset($file['is_addon']);
 		$addonKey		= $file['addon_key'];
-		
+
 		if($isAddon) {
 			foreach($file['version'] as $type => $version) {
 				if(empty($version)) {
@@ -267,7 +259,7 @@ elseif(isset($_POST['saveedit'])) {
 				updateVersions($fileID, $version, $type);
 			}
 		}
-		
+
 		if($mirrors) {
 			$saveMirrors = array();
 			foreach($mirrors as $mirror) {
@@ -293,12 +285,12 @@ elseif(isset($_POST['saveedit'])) {
 				$filesize = $upload['size'];
 				chmod($des_file, $new_chmod);
 			}
-		}	
+		}
 		elseif($fileurl != 'http://' && validate_url($fileurl)) {
 			$fileSource = $fileurl;
 		}
-		
-		if(!safe_query("UPDATE `".PREFIX."files` SET 
+
+		if(!safe_query("UPDATE `".PREFIX."files` SET
 			filecatID = {$filecat},
 			mirrors = '{$mirrors}',
 			filename = '{$filename}',
@@ -339,14 +331,6 @@ else {
       </tr>
     </table>';
 
-//  echo'<form method="post" action="admincenter.php?site=countries">
-//  <table width="100%" border="0" cellspacing="1" cellpadding="3" bgcolor="#DDDDDD">
-//    <tr>
-//      <td width="15%" class="title"><b>'.$_language->module['icon'].'</b></td>
-//      <td width="45%" class="title"><b>'.$_language->module['country'].'</b></td>
-//      <td width="15%" class="title"><b>'.$_language->module['shorthandle'].'</b></td>
-//      <td width="25%" class="title"><b>'.$_language->module['actions'].'</b></td>
-//    </tr>';
     echo'<form method="post" action="admincenter.php?site=files">
   <table width="100%" border="0" cellspacing="1" cellpadding="3" bgcolor="#DDDDDD">
 	<col />
@@ -387,23 +371,6 @@ else {
 		  </tr>';
 		}
 	}
-//    while($flags = mysql_fetch_array($ds)) {
-//      if($i%2) { $td='td1'; }
-//			else { $td='td2'; }
-//			$pic='<img src="../images/flags/'.$flags['short'].'.gif" border="0" alt="'.$flags['country'].'" />';
-//
-//      echo'<tr>
-//        <td class="'.$td.'" align="center">'.$pic.'</td>
-//        <td class="'.$td.'">'.getinput($flags['country']).'</td>
-//        <td class="'.$td.'" align="center">'.getinput($flags['short']).'</td>
-//        <td class="'.$td.'" align="center"><input type="button" onclick="MM_goToURL(\'parent\',\'admincenter.php?site=countries&amp;action=edit&amp;countryID='.$flags['countryID'].'\');return document.MM_returnValue" value="'.$_language->module['edit'].'" />
-//        <input type="button" onclick="MM_confirm(\''.$_language->module['really_delete'].'\', \'admincenter.php?site=countries&amp;delete=true&amp;countryID='.$flags['countryID'].'&amp;captcha_hash='.$hash.'\')" value="'.$_language->module['delete'].'" /></td>
-//      </tr>';
-//
-//      $i++;
-//		}
-//	}
-//  else echo'<tr><td class="td1" colspan="5">'.$_language->module['no_entries'].'</td></tr>';
 
   echo '</table>
   </form>

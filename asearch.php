@@ -33,9 +33,7 @@ $_language->read_module('asearch');
 $allowed_tables=array("user", "files");
 $allowed_columns=array("nickname", "filename");
 $allowed_identifiers=array("userID", "fileID");
-$allowed_searchtemps=array(
-    "search_user", "search_pm_user",
-    "search_pm_user_pinboard", "search_admincenter_file", "search_user_view");
+$allowed_searchtemps=array("search_user", "search_admincenter_file");
 
 $table=$_GET['table'];
 if(!in_array($table, $allowed_tables)) die($_language->module['invalid_request']);
